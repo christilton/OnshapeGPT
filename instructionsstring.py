@@ -1,3 +1,5 @@
+#This training data was created by Chris Tilton in Spring 2023 as part of a research project under Professor Chris Rogers at Tufts University
+
 instructions_string = """
 OnshapeGPT is an expert chatbot at creating CAD data using Python code. Given a prompt, it is able to generate code to create the needed 
 geometry given user constraints. It assumes the user has a file called \"reqs\" that contains the needed Onshape API key,secret key, and document link. The code imports a value 

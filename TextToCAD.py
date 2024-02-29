@@ -1,4 +1,5 @@
 import requests
+import json
 from reqs import os_api_keys, url
 
 def convert_link(old_link):
@@ -14,88 +15,76 @@ def convert_link(old_link):
         element_id = parts[6]
         
         # Construct the new link format
-        new_link = f"https://cad.onshape.com/api/partstudios/d/{doc_id}/w/{workspace_id}/e/{element_id}/feature"
+        new_link = f"https://cad.onshape.com/api/partstudios/d/{doc_id}/w/{workspace_id}/e/{element_id}/features"
         
         return new_link
     else:
-        return "Invalid Link Format"
+        return "Invalid link format"
     
 
 api_url = convert_link(url)
 if api_url == "Invalid Link Format":
-  print(api_url)
+    print(api_url)
+else:
+    # Define the header for the request
+    headers = {
+        'Accept': 'application/vnd.onshape.v1+json',
+        'Content-Type': 'application/json',
+    }
 
-# Define the header for the request
-headers = {
-    'Accept': 'application/vnd.onshape.v1+json',
-    'Content-Type': 'application/json',
-}
-
-# Construct the payload to create the configured cube
-create_configured_cube = {
-    "feature": {
-        "type": 134,
-        "typeName": "BTMFeature",
-        "message": {
-            "featureType": "cube",
-            "name": "Configured Cube",
-            "parameters": [
-                {
-                    "type": 2222,
-                    "typeName": "BTMParameterConfigured",
-                    "message": {
-                        "configurationParameterId": "Size",
-                        "values": [
-                            {
-                                "type": 1923,
-                                "typeName": "BTMConfiguredValueByEnum",
-                                "message": {
-                                    "namespace": "",
-                                    "enumName": "Size_conf",
-                                    "enumValue": "Small",
-                                    "value": {
-                                        "type": 147,
-                                        "typeName": "BTMParameterQuantity",
-                                        "message": {
-                                            "expression": "2 mm"
-                                        }
-                                    }
-                                }
-                            },
-                            {
-                                "type": 1923,
-                                "typeName": "BTMConfiguredValueByEnum",
-                                "message": {
-                                    "namespace": "",
-                                    "enumName": "Size_conf",
-                                    "enumValue": "Large",
-                                    "value": {
-                                        "type": 147,
-                                        "typeName": "BTMParameterQuantity",
-                                        "message": {
-                                            "expression": "3 mm"
-                                        }
-                                    }
-                                }
-                            }
-                        ],
-                        "parameterId": "sideLength"
+    # Construct the payload to create a sphere
+    create_sphere = {
+        "feature": {
+            "type": 134,
+            "typeName": "BTMFeature",
+            "message": {
+                "featureType": "sphere",
+                "name": "Sphere1",
+                "parameters": [
+                    {
+                        "type": 147,
+                        "typeName": "BTMParameterQuantity",
+                        "message": {
+                            "expression": "3*in",
+                            "parameterId": "radius"
+                        }
                     }
-                }
-            ]
+                ]
+            }
         }
     }
-}
 
-# Create the configured cube in Onshape
-if api_url == "Invalid Link Format":
-  print(api_url)
-else:
-  response = requests.post(api_url, headers=headers, auth=os_api_keys, json=create_configured_cube)
+    # Create the sphere in Onshape
+    response = requests.post(api_url, headers=headers, auth=os_api_keys, json=create_sphere)
 
-  # Check if the request was successful
-  if response.ok:
-      print("Configured part created successfully.")
-  else:
-      print(f"Failed to create configured part. Status code: {response.status_code}")
-      print(response.text)  # Print the response content for further inspection
+    # Construct the payload to create a cube
+    create_cube = {
+        "feature": {
+            "type": 134,
+            "typeName": "BTMFeature",
+            "message": {
+                "featureType": "cube",
+                "name": "Cube1",
+                "parameters": [
+                    {
+                        "type": 147,
+                        "typeName": "BTMParameterQuantity",
+                        "message": {
+                            "expression": "5*mm",
+                            "parameterId": "sideLength"
+                        }
+                    }
+                ]
+            }
+        }
+    }
+
+    # Create the cube in Onshape
+    response = requests.post(api_url, headers=headers, auth=os_api_keys, json=create_cube)
+
+    # Print the result
+    if response.ok:
+        print("Geometries created successfully.")
+    else:
+        print(f"Failed to create geometries. Status code: {response.status_code}")
+        print(response.text)  # Print the response content for further inspection
