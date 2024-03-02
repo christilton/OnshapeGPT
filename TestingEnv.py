@@ -1,6 +1,6 @@
 import requests
 import json
-from keys import os_api_keys
+from reqs import os_api_keys
 
 # Assemble the URL for the API call
 url = 'cad.onshape.com/documents/72c8d4311f41141439a879fe/w/74a76610221425436c20fb5e/e/0d00b0248470fb8faf78f967'
@@ -41,15 +41,22 @@ create_cube = {
     "type": 134,
     "typeName": "BTMFeature",
       "message": {
-        "featureType": "cube",
-        "name": "Cube1",
+        "featureType": "dcTorus",
+        "name": "Torus 1",
         "parameters": [
           {
              "type": 147,
              "typeName": "BTMParameterQuantity",
              "message": {
-               "expression": "1*in",
-               "parameterId": "sideLength"}
+               "expression": "20*in",
+               "parameterId": "majorRadius"}
+           },
+           {
+              "type": 147,
+             "typeName": "BTMParameterQuantity",
+             "message": {
+               "expression": "10*in",
+               "parameterId": "minorRadius"}
            }
         ]
       }

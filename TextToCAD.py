@@ -24,67 +24,71 @@ def convert_link(old_link):
 
 api_url = convert_link(url)
 if api_url == "Invalid Link Format":
-    print(api_url)
-else:
-    # Define the header for the request
-    headers = {
-        'Accept': 'application/vnd.onshape.v1+json',
-        'Content-Type': 'application/json',
+  print(api_url)
+
+# Define the header for the request
+headers = {
+    'Accept': 'application/vnd.onshape.v1+json',
+    'Content-Type': 'application/json',
+}
+
+# Construct the payload to create a Sphere with the radius of 4 inches
+create_sphere = {
+  "feature" : {
+    "type": 134,
+    "typeName": "BTMFeature",
+      "message": {
+        "featureType": "sphere",
+        "name": "Sphere1",
+        "parameters": [
+          {
+             "type": 147,
+             "typeName": "BTMParameterQuantity",
+             "message": {
+               "expression": "4 in",
+               "parameterId": "radius"}
+           }
+        ]
+      }
     }
+}
 
-    # Construct the payload to create a sphere
-    create_sphere = {
-        "feature": {
-            "type": 134,
-            "typeName": "BTMFeature",
-            "message": {
-                "featureType": "sphere",
-                "name": "Sphere1",
-                "parameters": [
-                    {
-                        "type": 147,
-                        "typeName": "BTMParameterQuantity",
-                        "message": {
-                            "expression": "3*in",
-                            "parameterId": "radius"
-                        }
-                    }
-                ]
-            }
-        }
+# Construct the payload to create a Cube with the side length of 5 inches
+create_cube = {
+  "feature" : {
+    "type": 134,
+    "typeName": "BTMFeature",
+      "message": {
+        "featureType": "cube",
+        "name": "Cube1",
+        "parameters": [
+          {
+             "type": 147,
+             "typeName": "BTMParameterQuantity",
+             "message": {
+               "expression": "5 in",
+               "parameterId": "sideLength"}
+           }
+        ]
+      }
     }
+}
 
-    # Create the sphere in Onshape
-    response = requests.post(api_url, headers=headers, auth=os_api_keys, json=create_sphere)
-
-    # Construct the payload to create a cube
-    create_cube = {
-        "feature": {
-            "type": 134,
-            "typeName": "BTMFeature",
-            "message": {
-                "featureType": "cube",
-                "name": "Cube1",
-                "parameters": [
-                    {
-                        "type": 147,
-                        "typeName": "BTMParameterQuantity",
-                        "message": {
-                            "expression": "5*mm",
-                            "parameterId": "sideLength"
-                        }
-                    }
-                ]
-            }
-        }
-    }
-
-    # Create the cube in Onshape
-    response = requests.post(api_url, headers=headers, auth=os_api_keys, json=create_cube)
-
-    # Print the result
-    if response.ok:
-        print("Geometries created successfully.")
+if api_url != "Invalid Link Format":
+    # Create Sphere in Onshape
+    response_sphere = requests.post(api_url, headers=headers, auth=os_api_keys, json=create_sphere)
+    
+    if response_sphere.ok:
+        print("Sphere created successfully.")
     else:
-        print(f"Failed to create geometries. Status code: {response.status_code}")
-        print(response.text)  # Print the response content for further inspection
+        print(f"Failed to create sphere. Status code: {response_sphere.status_code}")
+        print(response_sphere.text)  # Print the response content for further inspection
+
+    # Create Cube in Onshape
+    response_cube = requests.post(api_url, headers=headers, auth=os_api_keys, json=create_cube)
+    
+    if response_cube.ok:
+        print("Cube created successfully.")
+    else:
+        print(f"Failed to create cube. Status code: {response_cube.status_code}")
+        print(response_cube.text)  # Print the response content for further inspection
