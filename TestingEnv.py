@@ -26,7 +26,7 @@ def convert_link(old_link):
     
 
 api_url = convert_link(url)
-if api_url == "Invalid Link Format":
+if api_url == "Invalid link Format":
   print(api_url)
 
 # Define the header for the request
@@ -41,23 +41,16 @@ create_cube = {
     "type": 134,
     "typeName": "BTMFeature",
       "message": {
-        "featureType": "dcTorus",
-        "name": "Torus 1",
+        "featureType": "opSphere",
+        "name": "Sphere 1",
         "parameters": [
           {
              "type": 147,
              "typeName": "BTMParameterQuantity",
              "message": {
-               "expression": "20*in",
-               "parameterId": "majorRadius"}
-           },
-           {
-              "type": 147,
-             "typeName": "BTMParameterQuantity",
-             "message": {
-               "expression": "10*in",
-               "parameterId": "minorRadius"}
-           }
+               "expression": "5*in",
+               "parameterId": "radius"}
+          }
         ]
       }
     }
@@ -68,7 +61,7 @@ if api_url == "Invalid Link Format":
   print(api_url)
 else:
   response = requests.post(api_url, headers=headers, auth=os_api_keys, json=create_cube)
-  print(response)
+  print(response.text)
 
   # Check if the request was successful
   if response.ok:
