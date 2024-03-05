@@ -1,5 +1,5 @@
 from openai import OpenAI
-from instructionsstring_dev import instructions_string
+from instructionsstring_v2 import instructions_string
 from reqs import open_api_key as key
 try:
     from OnshapeGPTID import ID

@@ -23,7 +23,7 @@ def wait_for_assistant(thread, run):
         # wait 0.5 seconds
         time.sleep(0.25)
     dt = time.time() - t0
-    print("Done! Elapsed time: " + str(dt) + " seconds")
+    print("Done! Elapsed time: " + str(round(dt,2)) + " seconds")
     
     return run
 
