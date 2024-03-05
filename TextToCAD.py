@@ -32,28 +32,7 @@ headers = {
     'Content-Type': 'application/json',
 }
 
-# Construct the payload to create a Sphere with the radius of 4 inches
-create_sphere = {
-  "feature" : {
-    "type": 134,
-    "typeName": "BTMFeature",
-      "message": {
-        "featureType": "sphere",
-        "name": "Sphere1",
-        "parameters": [
-          {
-             "type": 147,
-             "typeName": "BTMParameterQuantity",
-             "message": {
-               "expression": "4 in",
-               "parameterId": "radius"}
-           }
-        ]
-      }
-    }
-}
-
-# Construct the payload to create a Cube with the side length of 5 inches
+# Construct the payload to update the cube's dimensions
 create_cube = {
   "feature" : {
     "type": 134,
@@ -66,7 +45,7 @@ create_cube = {
              "type": 147,
              "typeName": "BTMParameterQuantity",
              "message": {
-               "expression": "5 in",
+               "expression": "3*in",
                "parameterId": "sideLength"}
            }
         ]
@@ -74,21 +53,16 @@ create_cube = {
     }
 }
 
-if api_url != "Invalid Link Format":
-    # Create Sphere in Onshape
-    response_sphere = requests.post(api_url, headers=headers, auth=os_api_keys, json=create_sphere)
-    
-    if response_sphere.ok:
-        print("Sphere created successfully.")
-    else:
-        print(f"Failed to create sphere. Status code: {response_sphere.status_code}")
-        print(response_sphere.text)  # Print the response content for further inspection
+# Create Cube in Onshape
+if api_url == "Invalid Link Format":
+  print(api_url)
+else:
+  response = requests.post(api_url, headers=headers, auth=os_api_keys, json=create_cube)
+  #print(response)
 
-    # Create Cube in Onshape
-    response_cube = requests.post(api_url, headers=headers, auth=os_api_keys, json=create_cube)
-    
-    if response_cube.ok:
-        print("Cube created successfully.")
-    else:
-        print(f"Failed to create cube. Status code: {response_cube.status_code}")
-        print(response_cube.text)  # Print the response content for further inspection
+  # Check if the request was successful
+  if response.ok:
+      print("Geometry created successfully.")
+  else:
+      print(f"Failed to create geometry. Status code: {response.status_code}")
+      print(response.text)  # Print the response content for further inspection
