@@ -152,8 +152,6 @@ else:
 Finally, in all scripts, please automate the creation of a version with the name of the version being the user's prompt, word for word. This is for documentation purposes.
 
 
-
-      
 To add a second feature to the same script, add another create_geometry style JSON, and create another requests.post call above after the initial call. Repeat this for as many 
 times as are needed for the amount of features that need to be created.
 
