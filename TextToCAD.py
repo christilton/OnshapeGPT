@@ -10,7 +10,7 @@ def convert_link(old_link):
         workspace_id = parts[4]
         element_id = parts[6]
         new_link = f"https://cad.onshape.com/api/partstudios/d/{doc_id}/w/{workspace_id}/e/{element_id}/"
-        did_link = f"https://cad.onshape.com/api/v6/partstudios/d/{doc_id}/"
+        did_link = f"https://cad.onshape.com/api/documents/d/{doc_id}/"
         return new_link, did_link
     else:
         return "Invalid link format"
@@ -181,5 +181,5 @@ create_mouth = {
 
 response = requests.post(api_url + 'features', headers=headers, auth=os_api_keys, json=create_mouth)
 
-response = requests.post(did_link+'versions', headers=headers, auth=os_api_keys, json={"name":"Create a robot face with eyes, a nose, and a mouth (V2)","publishVersion":True})
+response = requests.post(did_link+'versions', headers=headers, auth=os_api_keys, json={"name":"Create a robot face with eyes, a nose, and a mouth (V2)","publishVersion":1})
 print(response.text)
