@@ -14,51 +14,95 @@ def convert_link(old_link):
         return new_link, did_link
     else:
         return "Invalid link format"
-    
+
 api_urls = convert_link(url)
 api_url = api_urls[0]
 did_link = api_urls[1]
 
-if api_url == "Invalid Link Format":
-    print(api_url)
+if api_url == "Invalid link format":
+  print(api_url)
 else:
-    headers = {
-        'Accept': 'application/vnd.onshape.v1+json',
-        'Content-Type': 'application/json',
-    }
+  headers = {
+      'Accept': 'application/vnd.onshape.v1+json',
+      'Content-Type': 'application/json',
+  }
 
-    create_geometry = {
-        "feature": {
-            "type": 134,
-            "typeName": "BTMFeature",
-            "message": {
-                "featureType": "fEllipsoid", 
-                "name": "Sphere",
-                "namespace": "d2af92bf969176a0558f5f9c7::vfa91e58a301e3c528465aa9e::ef139159bebea87592e54aa0b::m6564dbd037df9a05421d9a73",
-                "parameters": [
-                    {
-                        "type": 147,
-                        "typeName": "BTMParameterQuantity",
-                        "message": {
-                            "expression": "vector(0,0,0)*in",
-                            "parameterId": "center"}
-                    },
-                    {
-                        "type": 147,
-                        "typeName": "BTMParameterQuantity",
-                        "message": {
-                            "expression": "vector(1,1,1)*in",
-                            "parameterId": "radius"}
-                    }
-                ]
+  # Create the first cube
+  create_first_cube = {
+    "feature" : {
+      "type": 134,
+      "typeName": "BTMFeature",
+      "message": {
+          "featureType": "fCuboid",
+          "name": "First Cube",
+          "namespace":"d2af92bf969176a0558f5f9c7::vfa91e58a301e3c528465aa9e::ef139159bebea87592e54aa0b::m6564dbd037df9a05421d9a73",
+          "parameters": [
+            {
+               "type": 147,
+               "typeName": "BTMParameterQuantity",
+               "message": {
+                 "expression": "vector(0,0,0)*in",
+                 "parameterId": "corner1"
+              }
+            },
+            {
+               "type": 147,
+               "typeName": "BTMParameterQuantity",
+               "message": {
+                 "expression": "vector(1,1,1)*in",
+                 "parameterId": "corner2"
+              }
             }
+          ]
         }
-    }
+      }
+  }
 
-    response = requests.post(api_url+'features', headers=headers, auth=os_api_keys, json=create_geometry)
-    if response.ok:
-        print("Geometry created successfully.")
-    else:
-        print(f"Failed to create geometry. Status code: {response.status_code}")
-        print(response.text)
+  # Create the second cube stacked on top of the first
+  create_second_cube = {
+    "feature" : {
+      "type": 134,
+      "typeName": "BTMFeature",
+      "message": {
+          "featureType": "fCuboid",
+          "name": "Second Cube",
+          "namespace":"d2af92bf969176a0558f5f9c7::vfa91e58a301e3c528465aa9e::ef139159bebea87592e54aa0b::m6564dbd037df9a05421d9a73",
+          "parameters": [
+            {
+               "type": 147,
+               "typeName": "BTMParameterQuantity",
+               "message": {
+                 "expression": "vector(0,0,1)*in", # Adjusted to stack on top
+                 "parameterId": "corner1"
+              }
+            },
+            {
+               "type": 147,
+               "typeName": "BTMParameterQuantity",
+               "message": {
+                 "expression": "vector(1,1,2)*in", # Adjusted to stack on top
+                 "parameterId": "corner2"
+              }
+            }
+          ]
+        }
+      }
+  }
+
+  # Post the first cube
+  response = requests.post(api_url+'features', headers=headers, auth=os_api_keys, json=create_first_cube)
+  if response.ok:
+      print("First cube created successfully.")
+  else:
+      print(f"Failed to create first cube. Status code: {response.status_code}")
+      print(response.text)
+
+  # Post the second cube
+  response = requests.post(api_url+'features', headers=headers, auth=os_api_keys, json=create_second_cube)
+  if response.ok:
+      print("Second cube created successfully.")
+  else:
+      print(f"Failed to create second cube. Status code: {response.status_code}")
+      print(response.text)
+
 #This is the end of the Generated Code
