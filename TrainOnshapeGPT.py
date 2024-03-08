@@ -1,10 +1,18 @@
 from openai import OpenAI
-from instructionsstring_v2 import instructions_string
 from reqs import open_api_key as key
+from version import Version
+from instructionsstring_v3 import instructions_string
 try:
     from OnshapeGPTID import ID
 except ImportError:
     ID = None
+
+
+#update Version every time model is trained
+NewVersion = str(round(float(Version)+.01,2))
+v = open("version.py",'w')
+v.write(f"Version = \'{NewVersion}\'")
+v.close()
 
 client = OpenAI(api_key=key)
 if ID is not None:
@@ -27,5 +35,5 @@ assistant = client.beta.assistants.create(
     model = 'gpt-4-0125-preview'
 )
 
-print('New Assistant Created.')
+print(f'New Assistant Created. Updated to Version {NewVersion}.')
 f.write(f'ID = \'{assistant.id}\'')

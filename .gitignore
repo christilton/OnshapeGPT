@@ -1,11 +1,12 @@
 reqs.py
+ResponseLogs.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
 
-# C extensions
+# C extensionsS
 *.so
 
 # Distribution / packaging

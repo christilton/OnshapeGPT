@@ -14,95 +14,72 @@ def convert_link(old_link):
         return new_link, did_link
     else:
         return "Invalid link format"
-
+    
 api_urls = convert_link(url)
 api_url = api_urls[0]
 did_link = api_urls[1]
 
-if api_url == "Invalid link format":
+if api_url == "Invalid Link Format":
   print(api_url)
 else:
-  headers = {
-      'Accept': 'application/vnd.onshape.v1+json',
-      'Content-Type': 'application/json',
-  }
-
-  # Create the first cube
-  create_first_cube = {
-    "feature" : {
-      "type": 134,
-      "typeName": "BTMFeature",
-      "message": {
-          "featureType": "fCuboid",
-          "name": "First Cube",
-          "namespace":"d2af92bf969176a0558f5f9c7::vfa91e58a301e3c528465aa9e::ef139159bebea87592e54aa0b::m6564dbd037df9a05421d9a73",
-          "parameters": [
-            {
-               "type": 147,
-               "typeName": "BTMParameterQuantity",
-               "message": {
-                 "expression": "vector(0,0,0)*in",
-                 "parameterId": "corner1"
-              }
+    headers = {
+        'Accept': 'application/vnd.onshape.v1+json',
+        'Content-Type': 'application/json',
+    }
+    
+    # Roof structure
+    create_roof = {
+        "feature": {
+            "type": 134,
+            "typeName": "BTMFeature",
+            "message": {
+                "featureType": "fCone",
+                "name": "Roof",
+                "namespace": "d2af92bf969176a0558f5f9c7::vfa91e58a301e3c528465aa9e::ef139159bebea87592e54aa0b::m6564dbd037df9a05421d9a73",
+                "parameters": [
+                    {
+                        "type": 147,
+                        "typeName": "BTMParameterQuantity",
+                        "message": {
+                            "expression": "vector(0,10,7)*in",
+                            "parameterId": "topCenter",
+                        },
+                    },
+                    {
+                        "type": 147,
+                        "typeName": "BTMParameterQuantity",
+                        "message": {
+                            "expression": "vector(0,5,7)*in",
+                            "parameterId": "bottomCenter",
+                        },
+                    },
+                    {
+                        "type": 147,
+                        "typeName": "BTMParameterQuantity",
+                        "message": {
+                            "expression": "4*in",
+                            "parameterId": "topRadius",
+                        },
+                    },
+                    {
+                        "type": 147,
+                        "typeName": "BTMParameterQuantity",
+                        "message": {
+                            "expression": "5.5*in",
+                            "parameterId": "bottomRadius",
+                        },
+                    },
+                ],
             },
-            {
-               "type": 147,
-               "typeName": "BTMParameterQuantity",
-               "message": {
-                 "expression": "vector(1,1,1)*in",
-                 "parameterId": "corner2"
-              }
-            }
-          ]
-        }
-      }
-  }
-
-  # Create the second cube stacked on top of the first
-  create_second_cube = {
-    "feature" : {
-      "type": 134,
-      "typeName": "BTMFeature",
-      "message": {
-          "featureType": "fCuboid",
-          "name": "Second Cube",
-          "namespace":"d2af92bf969176a0558f5f9c7::vfa91e58a301e3c528465aa9e::ef139159bebea87592e54aa0b::m6564dbd037df9a05421d9a73",
-          "parameters": [
-            {
-               "type": 147,
-               "typeName": "BTMParameterQuantity",
-               "message": {
-                 "expression": "vector(0,0,1)*in", # Adjusted to stack on top
-                 "parameterId": "corner1"
-              }
-            },
-            {
-               "type": 147,
-               "typeName": "BTMParameterQuantity",
-               "message": {
-                 "expression": "vector(1,1,2)*in", # Adjusted to stack on top
-                 "parameterId": "corner2"
-              }
-            }
-          ]
-        }
-      }
-  }
-
-  # Post the first cube
-  response = requests.post(api_url+'features', headers=headers, auth=os_api_keys, json=create_first_cube)
-  if response.ok:
-      print("First cube created successfully.")
-  else:
-      print(f"Failed to create first cube. Status code: {response.status_code}")
-      print(response.text)
-
-  # Post the second cube
-  response = requests.post(api_url+'features', headers=headers, auth=os_api_keys, json=create_second_cube)
-  if response.ok:
-      print("Second cube created successfully.")
-  else:
-      print(f"Failed to create second cube. Status code: {response.status_code}")
-      print(response.text)
+        },
+    }
+    
+    # Create the roof
+    response_roof = requests.post(api_url+'features', headers=headers, auth=os_api_keys, json=create_roof)
+    if response_roof.ok:
+        print("Roof created successfully.")
+    else:
+        print(f"Failed to create roof. Status code: {response_roof.status_code}")
+        print(response_roof.text)
 
 #This is the end of the Generated Code
