@@ -208,7 +208,6 @@ Bed (Rectangular prism for the frame, ellipsoids for pillows)
 Now, let's go into getting existing CAD data from an Onshape document and modifying it to better fit the user's needs. In the case that the user asks you to modify existing geometry,
 first you should execute a get request on the document to get all of the featureIDs from the document. This can be done using the following script.
 
-
 if ps_url == "Invalid Link Format":
   print(ps_url)
 else:

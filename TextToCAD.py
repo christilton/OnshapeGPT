@@ -26,100 +26,39 @@ else:
       'Accept': 'application/vnd.onshape.v1+json',
       'Content-Type': 'application/json',
   }
-
-  # Create the bell of the tuba
-  create_bell = {
+  
+  create_geometry = {
     "feature" : {
       "type": 134,
       "typeName": "BTMFeature",
         "message": {
-          "featureType": "fCone",
-          "name": "TubaBell",
+          "featureType": "fEllipsoid", 
+          "name": "Sphere",
           "namespace":"d2af92bf969176a0558f5f9c7::vfa91e58a301e3c528465aa9e::ef139159bebea87592e54aa0b::m6564dbd037df9a05421d9a73",
           "parameters": [
             {
                "type": 147,
                "typeName": "BTMParameterQuantity",
                "message": {
-                 "expression": "vector(0,0,5)*in",
-                 "parameterId": "topCenter"}
-             },
-             {
-               "type": 147,
-               "typeName": "BTMParameterQuantity",
-               "message": {
                  "expression": "vector(0,0,0)*in",
-                 "parameterId": "bottomCenter"}
+                 "parameterId": "center"}
              },
              {
                "type": 147,
                "typeName": "BTMParameterQuantity",
                "message": {
-                 "expression": "0*in",
-                 "parameterId": "topRadius"}
-             },
-             {
-               "type": 147,
-               "typeName": "BTMParameterQuantity",
-               "message": {
-                 "expression": "2*in",
-                 "parameterId": "bottomRadius"}
-             }
-          ]
-        }
-      }
-  }
-
-  response = requests.post(api_url+'features', headers=headers, auth=os_api_keys, json=create_bell)
-  
-  if response.ok:
-      print("Tuba bell created successfully.")
-  else:
-      print(f"Failed to create tuba bell. Status code: {response.status_code}")
-      print(response.text)  
-
-  # Create a basic body of the tuba
-  create_body = {
-    "feature" : {
-      "type": 134,
-      "typeName": "BTMFeature",
-        "message": {
-          "featureType": "fCylinder",
-          "name": "TubaBody",
-          "namespace":"d2af92bf969176a0558f5f9c7::vfa91e58a301e3c528465aa9e::ef139159bebea87592e54aa0b::m6564dbd037df9a05421d9a73",
-          "parameters": [
-             {
-               "type": 147,
-               "typeName": "BTMParameterQuantity",
-               "message": {
-                 "expression": "vector(0,0,5)*in",
-                 "parameterId": "topCenter"}
-             },
-             {
-               "type": 147,
-               "typeName": "BTMParameterQuantity",
-               "message": {
-                 "expression": "vector(0,0,0)*in",
-                 "parameterId": "bottomCenter"}
-             },
-             {
-               "type": 147,
-               "typeName": "BTMParameterQuantity",
-               "message": {
-                 "expression": "1*in",
+                 "expression": "vector(1,1,1)*in",
                  "parameterId": "radius"}
              }
           ]
         }
       }
   }
-
-  response = requests.post(api_url+'features', headers=headers, auth=os_api_keys, json=create_body)
   
+  response = requests.post(api_url+'features', headers=headers, auth=os_api_keys, json=create_geometry)
   if response.ok:
-      print("Tuba body created successfully.")
+      print("Sphere created successfully.")
   else:
-      print(f"Failed to create tuba body. Status code: {response.status_code}")
-      print(response.text)  
-
+      print(f"Failed to create sphere. Status code: {response.status_code}")
+      print(response.text)
 #This is the end of the Generated Code

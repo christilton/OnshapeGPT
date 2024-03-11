@@ -86,6 +86,9 @@ try:
         else:
             print('OnshapeGPT:',generatedresponse)
         inputstring = "\nUser: "
-except KeyboardInterrupt:
-    f.close()
+finally:
+    if f is not None:
+     f.close()
+    responses.write("\nUser Grade (0-10):")
+    responses.write("\nUser Comments:")
     responses.close()
