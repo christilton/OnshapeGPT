@@ -1,8 +1,8 @@
 from openai import OpenAI
 import time,sys,subprocess
 from reqs import open_api_key as key
-from OnshapeGPTID import ID
-from version import Version
+from IDs.OnshapeGPTID import ID
+from IDs.version import Version
 
 # Reference for training and calling the assistant https://towardsdatascience.com/how-to-build-an-ai-assistant-with-openai-python-8b3b5a636f69
 def wait_for_assistant(thread, run):
