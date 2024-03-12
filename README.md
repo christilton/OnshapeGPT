@@ -10,7 +10,7 @@ Packages required include requests and openai.
 ## Current Capabilities
 OnshapeGPT can create the primitive geometries (Ellipsoids, Cuboids, Cones, and Cylinders) in Onshape and combine any number of them into CAD representations of nearly anything you can think of! Will they be good representations? Who knows! OnshapeGPT has minimal fine-tuning, so it is prone to mistakes. 
 
-##Future Additions
+## Future Additions
 The next things to be added to OnshapeGPT will include analyzing the current geometry inside the Onshape document, modifying and deleting this geometry, and creating sketches and features based on these sketches.
 
 ## 
