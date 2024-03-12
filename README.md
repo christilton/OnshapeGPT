@@ -1,4 +1,6 @@
+
 # OnshapeGPT
+<img width="383" alt="OnshapeGPT" src="https://github.com/christilton/OnshapeGPT/assets/84406266/b19d2bbd-7e5a-446f-83fd-44199dd4e5f9">
  
 OnshapeGPT is a chatbot powered by OpenAI assistants that is trained to create code that will create geometry inside a specified Onshape document. This chatbot was created and trained by Chris Tilton as a part of a Mechanical Engineering Research project under professor Chris Rogers at Tufts University in Spring 2024.
 
