@@ -1,7 +1,7 @@
 from openai import OpenAI
 from reqs import open_api_key as key
 from IDs.version import Version
-from instructionsstring_v3 import instructions_string
+from Training.instructionsstring_v3 import instructions_string
 try:
     from IDs.OnshapeGPTID import ID
 except ImportError:

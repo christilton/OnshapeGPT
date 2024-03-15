@@ -19,46 +19,38 @@ api_urls = convert_link(url)
 api_url = api_urls[0]
 did_link = api_urls[1]
 
+headers = {
+    'Accept': 'application/vnd.onshape.v1+json',
+    'Content-Type': 'application/json',
+}
+
+# Adjust Cone (Ice Cream Cone) to be right side up
+create_cone_corrected = {
+  "feature" : {
+    "type": 134,
+    "typeName": "BTMFeature",
+    "message": {
+        "featureType": "fCone", 
+        "name": "IceCreamConeCorrected",
+        "namespace":"d2af92bf969176a0558f5f9c7::vfa91e58a301e3c528465aa9e::ef139159bebea87592e54aa0b::m6564dbd037df9a05421d9a73",
+        "parameters": [
+            {"type": 147, "typeName": "BTMParameterQuantity", "message": {"expression": "vector(0,0,2)*in", "parameterId": "topCenter"}}, 
+            {"type": 147, "typeName": "BTMParameterQuantity", "message": {"expression": "vector(0,0,0)*in", "parameterId": "bottomCenter"}}, 
+            {"type": 147, "typeName": "BTMParameterQuantity", "message": {"expression": "1*in", "parameterId": "topRadius"}},
+            {"type": 147, "typeName": "BTMParameterQuantity", "message": {"expression": "0*in", "parameterId": "bottomRadius"}}
+         ]
+      }
+    }
+}
+
 if api_url == "Invalid Link Format":
   print(api_url)
 else:
-  headers = {
-      'Accept': 'application/vnd.onshape.v1+json',
-      'Content-Type': 'application/json',
-  }
-  
-  create_geometry = {
-    "feature" : {
-      "type": 134,
-      "typeName": "BTMFeature",
-        "message": {
-          "featureType": "fEllipsoid", 
-          "name": "Sphere",
-          "namespace":"d2af92bf969176a0558f5f9c7::vfa91e58a301e3c528465aa9e::ef139159bebea87592e54aa0b::m6564dbd037df9a05421d9a73",
-          "parameters": [
-            {
-               "type": 147,
-               "typeName": "BTMParameterQuantity",
-               "message": {
-                 "expression": "vector(0,0,0)*in",
-                 "parameterId": "center"}
-             },
-             {
-               "type": 147,
-               "typeName": "BTMParameterQuantity",
-               "message": {
-                 "expression": "vector(1,1,1)*in",
-                 "parameterId": "radius"}
-             }
-          ]
-        }
-      }
-  }
-  
-  response = requests.post(api_url+'features', headers=headers, auth=os_api_keys, json=create_geometry)
+  response = requests.post(api_url+'features', headers=headers, auth=os_api_keys, json=create_cone_corrected)
   if response.ok:
-      print("Sphere created successfully.")
+      print("Ice Cream Cone corrected and created successfully with the right orientation.")
   else:
-      print(f"Failed to create sphere. Status code: {response.status_code}")
+      print(f"Failed to correct Ice Cream Cone. Status code: {response.status_code}")
       print(response.text)
+
 #This is the end of the Generated Code

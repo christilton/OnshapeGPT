@@ -7,7 +7,7 @@ from IDs.version import Version
 # Reference for training and calling the assistant https://towardsdatascience.com/how-to-build-an-ai-assistant-with-openai-python-8b3b5a636f69
 def wait_for_assistant(thread, run):
     """
-        Function to periodically check run status of AI assistant and print run time
+        Function to periodically check run status of AI assistant and log runtime
     """
     dots = 0
     t0 = time.time()
@@ -30,19 +30,20 @@ def wait_for_assistant(thread, run):
     sys.stdout.flush()
     return run, runtime
 
+#Create OpenAI client and thread, then prompt user with initial prompt.
 client = OpenAI(api_key=key)
-
 thread = client.beta.threads.create()
 inputstring = f"\nWelcome to OnshapeGPT Version {Version}! What would you like to create today?\n\nUser: "
 
 #Create and add to logs
-responses = open("ResponseLogs.txt",'a')
+responses = open("Logs/ResponseLogs.txt",'a')
 responses.write("________________________________________________________________________________________________________________________________________________________\n") 
 responses.write(f"Conversation Started: {str(time.asctime(time.localtime()))}\n")
 responses.write(f"Version Number:"+Version+"\n")
 responses.write(f"Thread ID:{thread.id}\n")
 responses.write(f"OnshapeGPT: Welcome to OnshapeGPT Version{Version}! What would you like to create today?")
 
+#main loop
 try:
     while True:
         user_input = input(inputstring)
@@ -54,7 +55,7 @@ try:
         messages = client.beta.threads.messages.list(thread_id=thread.id)
         generatedresponse = messages.data[0].content[0].text.value
         responses.write(f"({runtime}) OnshapeGPT: "+generatedresponse+"\n")
-        #v = open('SampleResponse.txt','w')
+        #v = open('Logs/SampleResponse.txt','w')
         #v.write(generatedresponse)
         #v.close()
         # Extract the generated response between the comments
