@@ -10,7 +10,7 @@ except ImportError:
 
 #update Version every time model is trained
 NewVersion = str(round(float(Version)+.01,2))
-v = open("version.py",'w')
+v = open("IDs/version.py",'w')
 v.write(f"Version = \'{NewVersion}\'")
 v.close()
 
@@ -22,9 +22,9 @@ if ID is not None:
     except:
         print('No Old Assistant Found.')
         pass
-f = open('OnshapeGPTID.py','w')
+f = open('IDs/OnshapeGPTID.py','w')
 
-file = client.files.create(file=open("APIdocs.pdf", "rb"), purpose="assistants")
+file = client.files.create(file=open("Training/APIdocs.pdf", "rb"), purpose="assistants") #Need to change this so it doesn't upload a file every time
 
 assistant = client.beta.assistants.create(
     name = "OnshapeGPT",
