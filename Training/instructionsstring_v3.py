@@ -116,10 +116,10 @@ Cube/Cuboid:
 - featureType: fCuboid 
 - parameterIDs: corner1 and corner2 
   - Both vectors. 
-  - Default values: corner1 = vector(0,0,0) and corner2 = vector(1,1,1) 
+  - Default values: corner1 = vector(0,0,0)*in and corner2 = vector(1,1,1)*in 
   - For cubes, corner2-corner1 is the same x, y, and z value.
 
-Sphere (make sure not to use fSphere):
+Sphere (make sure not to use fSphere): #* NOTE: Please use units when creating vector quantities
 - featureType: fEllipsoid 
 - parameterIDs: center and radius, diameter is not a parameter.
   - center: Vector. A 3D length vector in world space. Default value: vector(0,0,0)*in
