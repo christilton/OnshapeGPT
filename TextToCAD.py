@@ -14,7 +14,7 @@ def convert_link(old_link):
         return ps_link, did_link
     else:
         return "Invalid link format"
-
+    
 api_urls = convert_link(url)
 ps_url = api_urls[0]
 did_link = api_urls[1]
@@ -24,184 +24,143 @@ headers = {
     'Content-Type': 'application/json',
 }
 
-# Adjusting the body's position to be directly below the head and in the negative Y direction
-create_body = {
-  "feature": {
-    "type": 134,
-    "typeName": "BTMFeature",
-    "message": {
-      "featureType": "fCuboid",
-      "name": "Body",
-      "namespace": "d2af92bf969176a0558f5f9c7::vfa91e58a301e3c528465aa9e::ef139159bebea87592e54aa0b::m6564dbd037df9a05421d9a73",
-      "parameters": [
-        {
-          "type": 147,
-          "typeName": "BTMParameterQuantity",
-          "message": {
-            "expression": "vector(-2.5,4,0)*in",  # Lower corner of the body
-            "parameterId": "corner1"
-          }
-        },
-        {
-          "type": 147,
-          "typeName": "BTMParameterQuantity",
-          "message": {
-            "expression": "vector(2.5,8,6)*in",  # Upper corner of the body
-            "parameterId": "corner2"
-          }
+# Refine the hat with a brim and a taller top
+# Hat Brim - A wide, short cylinder
+create_hat_brim = {
+    "feature": {
+        "type": 134,
+        "typeName": "BTMFeature",
+        "message": {
+            "featureType": "fCylinder",
+            "name": "HatBrim",
+            "namespace": "d2af92bf969176a0558f5f9c7::vfa91e58a301e3c528465aa9e::ef139159bebea87592e54aa0b::m6564dbd037df9a05421d9a73",
+            "parameters": [
+                {
+                    "type": 147,
+                    "typeName": "BTMParameterQuantity",
+                    "message": {
+                        "expression": "vector(0,0,6)*in",
+                        "parameterId": "topCenter"
+                    }
+                },
+                {
+                    "type": 147,
+                    "typeName": "BTMParameterQuantity",
+                    "message": {
+                        "expression": "vector(0,0,6.25)*in",
+                        "parameterId": "bottomCenter"
+                    }
+                },
+                {
+                    "type": 147,
+                    "typeName": "BTMParameterQuantity",
+                    "message": {
+                        "expression": "2*in",
+                        "parameterId": "radius"
+                    }
+                }
+            ]
         }
-      ]
     }
-  }
 }
 
-# Positions of arms and legs are adjusted to match the body's new position.
-create_left_arm = {
-  "feature": {
-    "type": 134,
-    "typeName": "BTMFeature",
-    "message": {
-      "featureType": "fCylinder",
-      "name": "LeftArm",
-      "namespace": "d2af92bf969176a0558f5f9c7::vfa91e58a301e3c528465aa9e::ef139159bebea87592e54aa0b::m6564dbd037df9a05421d9a73",
-      "parameters": [
-        {
-          "type": 147,
-          "typeName": "BTMParameterQuantity",
-          "message": {
-            "expression": "vector(-3,6,3)*in",  # Positioning left arm
-            "parameterId": "topCenter"
-          }
-        },
-        {
-          "type": 147,
-          "typeName": "BTMParameterQuantity",
-          "message": {
-            "expression": "vector(-3,6,0)*in",  # Aligning with body's bottom
-            "parameterId": "bottomCenter"
-          }
-        },
-        {
-          "type": 147,
-          "typeName": "BTMParameterQuantity",
-          "message": {
-            "expression": "0.5*in",  # Radius of the arm
-            "parameterId": "radius"
-          }
+# Hat Top - A tall, thinner cylinder than the brim
+create_hat_top = {
+    "feature": {
+        "type": 134,
+        "typeName": "BTMFeature",
+        "message": {
+            "featureType": "fCylinder",
+            "name": "HatTop",
+            "namespace": "d2af92bf969176a0558f5f9c7::vfa91e58a301e3c528465aa9e::ef139159bebea87592e54aa0b::m6564dbd037df9a05421d9a73",
+            "parameters": [
+                {
+                    "type": 147,
+                    "typeName": "BTMParameterQuantity",
+                    "message": {
+                        "expression": "vector(0,0,6.25)*in",
+                        "parameterId": "topCenter"
+                    }
+                },
+                {
+                    "type": 147,
+                    "typeName": "BTMParameterQuantity",
+                    "message": {
+                        "expression": "vector(0,0,8.25)*in",
+                        "parameterId": "bottomCenter"
+                    }
+                },
+                {
+                    "type": 147,
+                    "typeName": "BTMParameterQuantity",
+                    "message": {
+                        "expression": "1.25*in",
+                        "parameterId": "radius"
+                    }
+                }
+            ]
         }
-      ]
     }
-  }
 }
 
-create_right_arm = {
-  "feature": {
-    "type": 134,
-    "typeName": "BTMFeature",
-    "message": {
-      "featureType": "fCylinder",
-      "name": "RightArm",
-      "namespace": "d2af92bf969176a0558f5f9c7::vfa91e58a301e3c528465aa9e::ef139159bebea87592e54aa0b::m6564dbd037df9a05421d9a73",
-      "parameters": [
-        {
-          "type": 147,
-          "typeName": "BTMParameterQuantity",
-          "message": {
-            "expression": "vector(3,6,3)*in",  # Positioning right arm
-            "parameterId": "topCenter"
-          }
-        },
-        {
-          "type": 147,
-          "typeName": "BTMParameterQuantity",
-          "message": {
-            "expression": "vector(3,6,0)*in",  # Aligning with body's bottom
-            "parameterId": "bottomCenter"
-          }
-        },
-        {
-          "type": 147,
-          "typeName": "BTMParameterQuantity",
-          "message": {
-            "expression": "0.5*in",  # Radius of the arm
-            "parameterId": "radius"
-          }
+# Carrot nose - A cone representing the nose
+create_carrot_nose = {
+    "feature": {
+        "type": 134,
+        "typeName": "BTMFeature",
+        "message": {
+            "featureType": "fCone",
+            "name": "CarrotNose",
+            "namespace": "d2af92bf969176a0558f5f9c7::vfa91e58a301e3c528465aa9e::ef139159bebea87592e54aa0b::m6564dbd037df9a05421d9a73",
+            "parameters": [
+                {
+                    "type": 147,
+                    "typeName": "BTMParameterQuantity",
+                    "message": {
+                        "expression": "vector(0.75,0,5.5)*in",  # Slightly in front of the face
+                        "parameterId": "topCenter"
+                    }
+                },
+                {
+                    "type": 147,
+                    "typeName": "BTMParameterQuantity",
+                    "message": {
+                        "expression": "vector(1.5,0,5)*in",  # Base of the nose
+                        "parameterId": "bottomCenter"
+                    }
+                },
+                {
+                    "type": 147,
+                    "typeName": "BTMParameterQuantity",
+                    "message": {
+                        "expression": "0*in",
+                        "parameterId": "topRadius"
+                    }
+                },
+                {
+                    "type": 147,
+                    "typeName": "BTMParameterQuantity",
+                    "message": {
+                        "expression": "0.25*in",
+                        "parameterId": "bottomRadius"
+                    }
+                }
+            ]
         }
-      ]
     }
-  }
 }
 
-create_left_leg = {
-  "feature": {
-    "type": 134,
-    "typeName": "BTMFeature",
-    "message": {
-      "featureType": "fCuboid",
-      "name": "LeftLeg",
-      "namespace": "d2af92bf969176a0558f5f9c7::vfa91e58a301e3c528465aa9e::ef139159bebea87592e54aa0b::m6564dbd037df9a05421d9a73",
-      "parameters": [
-        {
-          "type": 147,
-          "typeName": "BTMParameterQuantity",
-          "message": {
-            "expression": "vector(-2,8,0)*in",  # Lower corner for left leg
-            "parameterId": "corner1"
-          }
-        },
-        {
-          "type": 147,
-          "typeName": "BTMParameterQuantity",
-          "message": {
-            "expression": "vector(-1,9,2)*in",  # Upper corner for left leg
-            "parameterId": "corner2"
-          }
-        }
-      ]
-    }
-  }
-}
-
-create_right_leg = {
-  "feature": {
-    "type": 134,
-    "typeName": "BTMFeature",
-    "message": {
-      "featureType": "fCuboid",
-      "name": "RightLeg",
-      "namespace": "d2af92bf969176a0558f5f9c7::vfa91e58a301e3c528465aa9e::ef139159bebea87592e54aa0b::m6564dbd037df9a05421d9a73",
-      "parameters": [
-        {
-          "type": 147,
-          "typeName": "BTMParameterQuantity",
-          "message": {
-            "expression": "vector(1,8,0)*in",  # Lower corner for right leg
-            "parameterId": "corner1"
-          }
-        },
-        {
-          "type": 147,
-          "typeName": "BTMParameterQuantity",
-          "message": {
-            "expression": "vector(2,9,2)*in",  # Upper corner for right leg
-            "parameterId": "corner2"
-          }
-        }
-      ]
-    }
-  }
-}
-
-if ps_url == "Invalid link format":
-    print(ps_url)
-else:
-    features = [create_body, create_left_arm, create_right_arm, create_left_leg, create_right_leg]
-    for feature in features:
+# Sequentially create the refined hat and carrot nose
+if ps_url != "Invalid Link Format":
+    features_to_create = [create_hat_brim, create_hat_top, create_carrot_nose]
+    for feature in features_to_create:
         response = requests.post(ps_url+'features', headers=headers, auth=os_api_keys, json=feature)
-        if response.ok:
-            print(f"{feature['feature']['message']['name']} adjusted and created successfully.")
+        if not response.ok:
+            print(f"Failed to create geometry. Status code: {response.status_code}")
+            print(response.text)  # Print the response content for further inspection
         else:
-            print(f"Failed to adjust and create {feature['feature']['message']['name']}. Status code: {response.status_code}")
-            print(response.text)
+            print(f"{feature['feature']['message']['name']} created successfully.")
+else:
+    print("Invalid PS URL.")
 
 #This is the end of the Generated Code
