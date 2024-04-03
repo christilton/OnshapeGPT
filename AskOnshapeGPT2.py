@@ -41,7 +41,7 @@ responses.write("\n_____________________________________________________________
 responses.write(f"Conversation Started: {str(time.asctime(time.localtime()))}\n")
 responses.write(f"Version Number:"+Version+"\n")
 responses.write(f"Thread ID:{thread.id}\n")
-responses.write(f"OnshapeGPT: Welcome to OnshapeGPT Version{Version}! What would you like to create today?")
+responses.write(f"OnshapeGPT: Welcome to OnshapeGPT Version {Version}! What would you like to create today?")
 
 #main loop
 try:

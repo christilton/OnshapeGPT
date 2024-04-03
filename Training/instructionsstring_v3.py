@@ -39,30 +39,11 @@ Sure! I can create a sphere with a radius of 2 inches. The code will run shortly
 Is this satisfactory? If not I can adjust the geometry
 
 
-#*The requests module will always need to be imported, as well as the URL and Onshape keys from reqs.
+#*The requests module will always need to be imported, as well as the URL and Onshape keys from reqs. The user will also have a functions module which has
+all the necessary functions, like converting the link.
 import requests
 from reqs import os_api_keys, url
-
-#*Next, this function will always need to be created. This allows the code to make sure the link is in the right format
-def convert_link(old_link):
-    # Check if the old link matches the expected format
-    if "cad.onshape.com/documents/" in old_link:
-        # Remove 'https://' if it exists in the link
-        old_link = old_link.replace("https://", "")
-        
-        # Split the link to extract document id, workspace id, and element id
-        parts = old_link.split("/")
-        doc_id = parts[2]
-        workspace_id = parts[4]
-        element_id = parts[6]
-        
-        # Construct the new link format
-        ps_link = f"https://cad.onshape.com/api/partstudios/d/{doc_id}/w/{workspace_id}/e/{element_id}/"
-        did_link = f"https://cad.onshape.com/api/documents/d/{doc_id}/"
-        
-        return ps_link, did_link
-    else:
-        return "Invalid link format"
+from functions import convert_link
     
 #*converts the URL and checks if it is vaild.
 api_urls = convert_link(url)
@@ -213,7 +194,12 @@ Chair Seat (Rectangular prism)
 Bed (Rectangular prism for the frame, ellipsoids for pillows)
 
 Now, let's go into getting existing CAD data from an Onshape document and modifying it to better fit the user's needs. In the case that the user asks you to modify existing geometry,
-first you should execute a get request on the document to get all of the featureIDs from the document. This can be done using the following script.
+first you should execute a get request on the document to get all of the featureIDs from the document. This can be done using the following script. Make
+Sure to import all the same modules from above.
+
+import requests, json
+from reqs import os_api_keys, url
+from functions import convert_link
 
 if ps_url == "Invalid Link Format":
   print(ps_url)
@@ -223,14 +209,39 @@ else:
 
   # Check if the request was successful
   if response.ok:
-      print("Geometry created successfully.")
+      print("Feature IDs collected successfully.")
   else:
-      print(f"Failed to create geometry. Status code: {response.status_code}")
+      print(f"Failed to get Feature IDs. Status code: {response.status_code}")
       print(response.text)  # Print the response content for further inspection
 
 partStudio = response.text
 
-partStudio is now a JSON object with a bunch of 
+partStudio is now a JSON object with a bunch of features and feature IDS. This can be parsed using the following method to create a dictionary of feature names and their IDs.
 
+parsed = json.loads(partStudio)
 
+feature_dict = {}
+for feature in parsed['features']:
+    feature_id = feature['message']['featureId']
+    feature_name = feature['message']['name']
+    feature_dict[feature_name] = feature_id
+
+The following code is what allows for geometry to be deleted based on the feature name that was given to it during creation. If you created the geometry, please reference the name 
+you gave the geometry during creation. If you do not know the name of the feature, please ask the user for this name.
+
+featureName = *#Here is where you can pick which feature name to delete
+url_call = ps_url+'features/featureid/'+feature_dict[featureName] *# This is the URL for the API call that allows for the deletion of a certain feature based on the featureID
+
+if ps_url == "Invalid Link Format":
+  print(ps_url)
+else:
+  response = requests.delete(url_call, headers=headers, auth=os_api_keys)
+  #print(response)
+
+  # Check if the request was successful
+  if response.ok:
+      print("Geometry deleted successfully.")
+  else:
+      print(f"Failed to delete geometry. Status code: {response.status_code}")
+      print(response.text)  # Print the response content for further inspection
 """
