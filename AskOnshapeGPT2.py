@@ -1,5 +1,5 @@
 from openai import OpenAI
-import time,sys,subprocess
+import time,sys,subprocess, json
 from reqs import open_api_key as key
 from IDs.OnshapeGPTID import ID
 from IDs.version import Version
@@ -22,6 +22,7 @@ def wait_for_assistant(thread, run):
             thread_id=thread.id,
             run_id=run.id
         )
+        #print(client.beta.threads.messages.list(thread_id=thread.id))
         # wait 0.1 seconds
         time.sleep(0.1)
     dt = time.time() - t0
@@ -42,10 +43,12 @@ responses.write(f"Conversation Started: {str(time.asctime(time.localtime()))}\n"
 responses.write(f"Version Number:"+Version+"\n")
 responses.write(f"Thread ID:{thread.id}\n")
 responses.write(f"OnshapeGPT: Welcome to OnshapeGPT Version {Version}! What would you like to create today?")
-
+f = False
+content_count = 0
 #main loop
 try:
     while True:
+        generatedresponse = ''
         user_input = input(inputstring)
         responses.write("\nUser: "+user_input+"\n")
         message = client.beta.threads.messages.create(thread_id=thread.id, role='user', content=user_input)
@@ -53,6 +56,7 @@ try:
         run = wait_for_assistant(thread, run)
         runtime = run[1]
         messages = client.beta.threads.messages.list(thread_id=thread.id)
+        #print(messages)
         generatedresponse = messages.data[0].content[0].text.value
         responses.write(f"({runtime}) OnshapeGPT: "+generatedresponse+"\n")
         #v = open('Logs/SampleResponse.txt','w')
@@ -88,7 +92,8 @@ try:
             print('OnshapeGPT:',generatedresponse)
         inputstring = "\nUser: "
 finally:
-    f.close()
+    if f:
+        f.close()
     responses.write("\nUser Grade (0-10):")
     responses.write("\nUser Comments:")
     responses.close()
