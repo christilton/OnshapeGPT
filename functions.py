@@ -13,8 +13,9 @@ def convert_link(old_link):
         # Construct the new link format
         ps_link = f"https://cad.onshape.com/api/partstudios/d/{doc_id}/w/{workspace_id}/e/{element_id}/"
         did_link = f"https://cad.onshape.com/api/documents/d/{doc_id}/"
+        p_link = f"https://cad.onshape.com/api/parts/d/{doc_id}/w/{workspace_id}/e/{element_id}"
         
-        return ps_link, did_link
+        return ps_link, did_link, p_link
     else:
         return "Invalid link format"
     

@@ -3,10 +3,9 @@ import requests, json
 from reqs import os_api_keys, url
 from functions import convert_link
 
+# Convert the URL and check if it is valid.
 api_urls = convert_link(url)
 ps_url = api_urls[0]
-did_link = api_urls[1]
-
 if ps_url == "Invalid Link Format":
     print(ps_url)
 
@@ -15,10 +14,16 @@ headers = {
     'Content-Type': 'application/json',
 }
 
-# Fetch all feature IDs to delete existing geometry
-response = requests.get(ps_url+'features?rollbackBarIndex=-1&includeGeometryIds=true&noSketchGeometry=false', headers=headers, auth=os_api_keys)
-if response.ok:
-    print("Feature IDs collected successfully.")
+# Get all feature IDS
+if ps_url != "Invalid Link Format":
+    response = requests.get(ps_url + 'features?rollbackBarIndex=-1&includeGeometryIds=true&noSketchGeometry=false', headers=headers, auth=os_api_keys)
+    
+    if response.ok:
+        print("Feature IDs collected successfully.")
+    else:
+        print(f"Failed to get Feature IDs. Status code: {response.status_code}")
+        print(response.text)  # Print the response content for further inspection
+
     partStudio = response.text
     parsed = json.loads(partStudio)
     feature_dict = {}
@@ -26,31 +31,20 @@ if response.ok:
         feature_id = feature['message']['featureId']
         feature_name = feature['message']['name']
         feature_dict[feature_name] = feature_id
-    # Delete all existing geometry
-    for featureName in feature_dict:
-        url_call = ps_url+'features/featureid/'+feature_dict[featureName]
-        del_response = requests.delete(url_call, headers=headers, auth=os_api_keys)
-        if del_response.ok:
-            print(f"{featureName} deleted successfully.")
+
+    # Assuming the original peg was named "Peg"
+    featureName = "Peg" 
+    if featureName in feature_dict:
+        url_call = ps_url + 'features/featureid/' + feature_dict[featureName]
+        response = requests.delete(url_call, headers=headers, auth=os_api_keys)
+
+        # Check if the request was successful
+        if response.ok:
+            print("Original Peg deleted successfully.")
         else:
-            print(f"Failed to delete {featureName}. Status code: {del_response.status_code}")
-            print(del_response.text)
-else:
-    print(f"Failed to get Feature IDs. Status code: {response.status_code}")
-    print(response.text)
-
-# Recreate the detailed snowman with connected components
-# Creating the snowman's body and head using spheres
-create_sphere("vector(0,0,0)*in", "vector(3,3,3)*in", "Bottom Sphere")
-create_sphere("vector(0,0,6)*in", "vector(2,2,2)*in", "Middle Sphere")
-create_sphere("vector(0,0,10)*in", "vector(1,1,1)*in", "Top Sphere")
-
-# Creating the snowman's arms using cylinders
-create_cylinder("vector(4,0,5)*in", "vector(7,0,5)*in", "0.5*in", "Right Arm")
-create_cylinder("vector(-4,0,5)*in", "vector(-7,0,5)*in", "0.5*in", "Left Arm")
-
-# Creating the snowman's hat using cylinders
-create_cylinder("vector(0,0,11)*in", "vector(0,0,11.5)*in", "2*in", "Hat Brim")
-create_cylinder("vector(0,0,11.5)*in", "vector(0,0,14)*in", "1*in", "Hat Top")
-
+            print(f"Failed to delete the original Peg. Status code: {response.status_code}")
+            print(response.text)  # Print the response content for further inspection
+    else:
+        print(f"Could not find a feature named {featureName}. Please check the name and try again.")
+    
 #This is the end of the Generated Code

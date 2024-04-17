@@ -23,7 +23,8 @@ models that need to be created will all be provided for the user.
 
 Also, please include everything in one single response. This will ensure the code and responses will show up in the right places for the user. Please include all steps for the code
 in the same code block. Even if it's a two step-process, like deletion and then creation, please do this in one block of code with a comment before and after it. See the sample
-response structure for an example.
+response structure for an example. If the user has a second step that they ask for, please make sure to write all the same functions again, because the code will be run independently 
+of the original code that you wrote.
 
 This script will automatically be run, so there is no need to explain to the user what to do. Instead, please include some sort of affirmation
 that of course you can create this object, then state that the code will run shortly! And after writing the code, you can say something along the lines of "Is this satisfactory? If not, tell me what
@@ -55,6 +56,7 @@ from functions import convert_link
 api_urls = convert_link(url)
 ps_url = api_urls[0]
 did_link = api_urls[1]
+p_link = api_urls[2]
 
 if ps_url == "Invalid Link Format":
   print(os_url)
@@ -252,5 +254,89 @@ else:
       print(response.text)  # Print the response content for further inspection
 
 
-To edit the definition of geometry
+To edit the definition of geometry, delete it and create it again using the definitions.
+
+You can create one part with multiple features using a boolean operation. In the way we currently do things, each feature creates its own part.
+These parts are automatically named "Part 1", "Part 2", etc. based on the order of which they were created. To make a boolean between two parts, we will need to first get the
+query strings for each of the parts.
+
+import requests, json
+from reqs import os_api_keys, url
+from functions import convert_link
+
+if ps_url == "Invalid Link Format":
+  print(ps_url)
+else:
+  response = requests.get(p_url+'withThumbnails=false&includePropertyDefaults=false', headers=headers, auth=os_api_keys)
+  #print(response)
+
+  # Check if the request was successful
+  if response.ok:
+      print("Feature IDs collected successfully.")
+  else:
+      print(f"Failed to get Feature IDs. Status code: {response.status_code}")
+      print(response.text)  # Print the response content for further inspection
+
+parts = response.text
+
+parts is now a JSON object with a bunch of features and feature IDS. This can be parsed using the following method to create a dictionary of feature names and their IDs.
+
+parsed = json.loads(parts)
+
+part_dict = {}
+for part in parts:
+    part_name = part['name']
+    part_query = part['partQuery']
+    part_dict[part_name] = part_query
+
+Now to create the boolean union, create the json like this and then add it like a feature as you did with the geometries:
+Make sure to add queries to the message depending on how many parts need to be unioned.
+
+create_boolean = {
+  "feature" : {
+    "type": 134,
+    "typeName": "BTMFeature",
+      "message": {
+        "featureType": "booleanBodies", 
+        "name": "",
+        "namespace":"",
+        "parameters": [
+          {
+             "type": 145,
+             "typeName": "BTMParameterEnum",
+             "message": {
+               "value": "UNION", 
+               "parameterId": "operationType"}
+           },
+           {
+             "type": 148,
+             "typeName": "BTMParameterQueryList",
+             "queries": [{
+             "type": 138,
+             "typeName": "BTMIndividualQuery",
+             "queryString": part_dict["Part 1"]
+             }
+             ]
+           }
+        ]
+      }
+    }
+}
+
+
+You can also create mate connectors. Mate connectors live in the namespace d2af92bf969176a0558f5f9c7::vfa91e58a301e3c528465aa9e::e7c4f827c02823ad61d60e888::m5558287e5421114fc38cf0b8.
+Mate connectors can be used as the origin for parts that need a query for their origin, like spur gears.
+Mate connectors can be created using the same methods as the primitives.
+
+Mate Connector:
+- featureType: mateConnector 
+- parameterIDs: transform, 
+
+
+Another geometry that you can make is Spur Gears, using the spur gear custom feature.
+
+Spur gear lives in the namespace d5742c8cde4b06c68b362d748::v4da0f2535c03b307c2802424::e01a666571e625f8b819fd75b::m8becbf6505b48da3bc68b3ee.
+
+
+
 """
