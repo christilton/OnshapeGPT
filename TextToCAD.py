@@ -3,7 +3,7 @@ import requests, json
 from reqs import os_api_keys, url
 from functions import convert_link
 
-# Convert the URL and check if it's valid
+# Convert the Onshape document URL to usable endpoints
 api_urls = convert_link(url)
 ps_url = api_urls[0]
 did_link = api_urls[1]
@@ -12,93 +12,50 @@ p_url = api_urls[2]
 if ps_url == "Invalid Link Format":
     print(ps_url)
 else:
-    # Define the headers for the request
+    # Define the header for the request
     headers = {
         'Accept': 'application/vnd.onshape.v1+json',
         'Content-Type': 'application/json',
     }
     
-    # Delete the existing frame named "NewFrame"
-    featureName = "NewFrame"
-    # Retrieve all feature IDs to find the ID for the "NewFrame"
-    response = requests.get(ps_url+'features?rollbackBarIndex=-1&includeGeometryIds=true&noSketchGeometry=false', headers=headers, auth=os_api_keys)
-    if response.ok:
-        partStudio = response.text
-        parsed = json.loads(partStudio)
-        feature_dict = {}
-        for feature in parsed['features']:
-            feature_id = feature['message']['featureId']
-            feature_name = feature['message']['name']
-            feature_dict[feature_name] = feature_id
-        
-        if featureName in feature_dict:
-            url_call = ps_url+'features/featureid/'+feature_dict[featureName]
-            response = requests.delete(url_call, headers=headers, auth=os_api_keys)
-            print("Previous frame deleted successfully.") if response.ok else print(f"Failed to delete the previous frame. Status code: {response.status_code} {response.text}")
-    
-    # Create an adjusted frame
-    create_frame = {
-      "feature" : {
+    # Construct the payload for creating a cube
+    create_cube = {
+      "feature": {
         "type": 134,
         "typeName": "BTMFeature",
           "message": {
             "featureType": "fCuboid", 
-            "name": "AdjustedFrame",
+            "name": "MyCube",
             "namespace":"d2af92bf969176a0558f5f9c7::vfa91e58a301e3c528465aa9e::ef139159bebea87592e54aa0b::m6564dbd037df9a05421d9a73",
             "parameters": [
               {
                  "type": 147,
                  "typeName": "BTMParameterQuantity",
                  "message": {
-                   "expression": "vector(-2.5,0,5)*in",
-                   "parameterId": "corner1"}
-               },
-               {
+                   "expression": "vector(0,0,0)*in",  # Bottom left front corner
+                   "parameterId": "corner1"
+               }
+             },
+             {
                  "type": 147,
                  "typeName": "BTMParameterQuantity",
                  "message": {
-                   "expression": "vector(7.5,2,5.5)*in",
+                   "expression": "vector(1,1,1)*in",  # Top right back corner
                    "parameterId": "corner2"}
                }
             ]
           }
         }
     }
-    response = requests.post(ps_url+'features', headers=headers, auth=os_api_keys, json=create_frame)
-    print("Adjusted frame created successfully.") if response.ok else print(f"Failed to create the adjusted frame. Status code: {response.status_code} {response.text}")
+    
+    # Create Cube in Onshape
+    response = requests.post(ps_url+'features', headers=headers, auth=os_api_keys, json=create_cube)
 
-    # Adding four legs to the frame
-    for i in range(4):
-        x_pos = -2.5 if i%2 == 0 else 7.5
-        y_pos = 0 if i < 2 else 2
-        create_leg = {
-          "feature" : {
-            "type": 134,
-            "typeName": "BTMFeature",
-              "message": {
-                "featureType": "fCuboid", 
-                "name": f"Leg{i+1}",
-                "namespace":"d2af92bf969176a0558f5f9c7::vfa91e58a301e3c528465aa9e::ef139159bebea87592e54aa0b::m6564dbd037df9a05421d9a73",
-                "parameters": [
-                  {
-                     "type": 147,
-                     "typeName": "BTMParameterQuantity",
-                     "message": {
-                       "expression": f"vector({x_pos},{y_pos},0)*in",
-                       "parameterId": "corner1"}
-                   },
-                   {
-                     "type": 147,
-                     "typeName": "BTMParameterQuantity",
-                     "message": {
-                       "expression": f"vector({x_pos+0.5},{y_pos+0.5},5)*in",
-                       "parameterId": "corner2"}
-                   }
-                ]
-              }
-            }
-        }
-        response = requests.post(ps_url+'features', headers=headers, auth=os_api_keys, json=create_leg)
-        print(f"Leg {i+1} created successfully.") if response.ok else print(f"Failed to create Leg {i+1}. Status code: {response.status_code} {response.text}")
+    # Check if the request was successful
+    if response.ok:
+        print("Cube created successfully.")
+    else:
+        print(f"Failed to create cube. Status code: {response.status_code}")
+        print(response.text)  # Print the response content for further inspection
 
 #This is the end of the Generated Code
